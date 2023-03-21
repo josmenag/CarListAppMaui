@@ -23,7 +23,7 @@ public class Program
         });
 
         var conn = new SqliteConnection($"Data Source=Users\\jose.mendez\\Projects\\carlist.db");
-        
+
 
         var dbPath = Path.Join(Directory.GetCurrentDirectory(), "carlist.db");
         builder.Services.AddDbContext<CarListDbContext>(o => o.UseSqlite(conn));
@@ -31,11 +31,11 @@ public class Program
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-        });
+        if (app.Environment.IsDevelopment())
+        { 
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
        
         app.UseHttpsRedirection();
         app.UseCors("AllowAll");
@@ -43,8 +43,10 @@ public class Program
         app.UseAuthorization();
 
         app.MapGet("/cars", async (CarListDbContext db) => await db.Cars.ToListAsync());
+
         app.MapGet("/cars/{id}", async (int id, CarListDbContext db) =>
             await db.Cars.FindAsync(id) is Car car ? Results.Ok(car) : Results.NotFound());
+
         app.MapPut("/cars/{id}", async (int id, Car car, CarListDbContext db) => {
             var record = await db.Cars.FindAsync(id);
             if (record is null) return Results.NotFound();
@@ -57,6 +59,7 @@ public class Program
 
             return Results.NoContent();
         });
+
         app.MapDelete("/cars/{id}", async (int id, CarListDbContext db) => {
             var record = await db.Cars.FindAsync(id);
             if (record is null) return Results.NotFound();
@@ -67,7 +70,7 @@ public class Program
             return Results.NoContent();
         });
 
-        app.MapPost("/cars", async (int id, Car car, CarListDbContext db) => {
+        app.MapPost("/cars", async (Car car, CarListDbContext db) => {
             await db.AddAsync(car);
             await db.SaveChangesAsync();
 
