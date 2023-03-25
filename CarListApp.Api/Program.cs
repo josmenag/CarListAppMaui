@@ -22,22 +22,30 @@ public class Program
             o.AddPolicy("AllowAll", a => a.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
         });
 
-        var conn = new SqliteConnection($"Data Source=Users\\jose.mendez\\Projects\\carlist.db");
+        var conn = new SqliteConnection($"Data Source=carlist.db");
 
 
-        var dbPath = Path.Join(Directory.GetCurrentDirectory(), "carlist.db");
+        //var dbPath = Path.Join(Directory.GetCurrentDirectory(), "carlist.db");
         builder.Services.AddDbContext<CarListDbContext>(o => o.UseSqlite(conn));
 
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        { 
+        using (var scope = app.Services.CreateScope())
+        using (var context = scope.ServiceProvider.GetService<CarListDbContext>())
+        {
+            context.Database.Migrate();
+        }
+
+       
             app.UseSwagger();
             app.UseSwaggerUI();
-        }
        
         app.UseHttpsRedirection();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
         app.UseCors("AllowAll");
 
         app.UseAuthorization();
