@@ -1,4 +1,6 @@
-﻿namespace CarListApp.Maui;
+﻿using CarListApp.Maui.ViewModels;
+
+namespace CarListApp.Maui;
 
 public class LogoutPage : ContentPage
 {
