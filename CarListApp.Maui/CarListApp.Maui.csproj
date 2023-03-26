@@ -56,6 +56,10 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
 		<PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.4" />
+		<PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+		<PackageReference Include="Serilog.Expressions" Version="3.4.1" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.27.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -64,6 +68,8 @@
 	  <None Remove="Views\" />
 	  <None Remove="Services\" />
 	  <None Remove="Platforms\Android\Resources\xml\" />
+	  <None Remove="Controls\" />
+	  <None Remove="Helpers\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Models\" />
@@ -71,5 +77,7 @@
 	  <Folder Include="Views\" />
 	  <Folder Include="Services\" />
 	  <Folder Include="Platforms\Android\Resources\xml\" />
+	  <Folder Include="Controls\" />
+	  <Folder Include="Helpers\" />
 	</ItemGroup>
 </Project>

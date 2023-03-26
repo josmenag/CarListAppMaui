@@ -1,28 +1,41 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using CarListApp.Maui.Models;
+using CarListApp.Maui.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http.Json;
+using System.Text;
+using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 using System.Text.Json;
-using CarListApp.Maui.Models;
-
 
 namespace CarListApp.Maui.Services
 {
 	public class CarApiService
 	{
 		HttpClient _httpClient;
-        public static string BaseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:8099" : "http://localhost:8099";
-
         public string StatusMessage;
 
 		public CarApiService()
 		{
-			_httpClient = new() { BaseAddress = new Uri(BaseAddress) };
+			_httpClient = new() { BaseAddress = new Uri(GetBaseAddress()) };
 		}
+
+        private string GetBaseAddress()
+        {
+#if DEBUG
+                        return DeviceInfo.Platform == DevicePlatform.Android ? "https://10.0.2.2.8099" : "http://localhost:8099";
+#elif RELEASE
+            // published address here
+            return "https://carinventoryapp-api.azurewebsites.net/";
+            #endif
+        }
 
         public async Task<List<Car>> GetCars()
         {
             try
             {
+                SetAuthToken();
                 var response = await _httpClient.GetStringAsync("/cars");
                 return JsonSerializer.Deserialize<List<Car>>(response);
             }
@@ -90,6 +103,30 @@ namespace CarListApp.Maui.Services
             {
                 StatusMessage = "Failed to update data.";
             }
+        }
+
+        public async Task<AuthResponseModel> Login(LoginModel loginModel)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("/login", loginModel);
+                response.EnsureSuccessStatusCode();
+                StatusMessage = "Login successful";
+
+                return JsonSerializer.Deserialize<AuthResponseModel>(await response.Content.ReadAsStringAsync());
+            }
+            catch (Exception)
+            {
+                StatusMessage = "Failed to log in";
+                return default;
+            }
+        }
+
+        public async Task SetAuthToken()
+        {
+            var token = await SecureStorage.GetAsync("Token");
+            _httpClient.DefaultRequestHeaders.Authorization = new
+                System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
     }
 }

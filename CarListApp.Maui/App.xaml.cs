@@ -1,9 +1,13 @@
-﻿using CarListApp.Maui.Services;
+﻿using Android.Hardware.Camera2;
+using CarListApp.Maui.Models;
+using CarListApp.Maui.Services;
 
 namespace CarListApp.Maui;
 
 public partial class App : Application
 {
+	public static UserInfo UserInfo;
+
 	public static CarDatabaseService CarDatabaseService { get; private set; }
 
 	public App(CarDatabaseService carDatabaseService)
@@ -12,6 +16,8 @@ public partial class App : Application
 
 		MainPage = new AppShell();
 		CarDatabaseService = carDatabaseService;
+
+
 	}
 }
 
