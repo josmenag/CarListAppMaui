@@ -44,7 +44,7 @@ namespace CarListApp.Maui.ViewModels
         int carId;
 
         [RelayCommand]
-        async Task GetCarList()
+        public async Task GetCarList()
         {
             if (IsLoading) return;
             try

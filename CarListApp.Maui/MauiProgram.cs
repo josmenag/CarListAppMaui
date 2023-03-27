@@ -1,5 +1,4 @@
 ﻿using CarListApp.Maui.Services;
-using Microsoft.Extensions.Logging;
 using CarListApp.Maui.ViewModels;
 using CarListApp.Maui.Views;
 
@@ -34,11 +33,6 @@ public static class MauiProgram
         builder.Services.AddSingleton<LoginPage>();
         builder.Services.AddTransient<CarDetailsPage>();
 		builder.Services.AddSingleton<LogoutPage>();
-
-
-#if DEBUG
-        builder.Logging.AddDebug();
-#endif
 
 		return builder.Build();
 	}
